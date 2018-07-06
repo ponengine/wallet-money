@@ -31,6 +31,9 @@ public class WalletService {
 	@Autowired
 	private TransactionReportRepository transactionReportRepository;
 	public String addWalletService(Dealing addwallet) {
+		if(addwallet.getPrice()<=0){
+			return "Amount must be greater than 0";
+		}
 		Wallet wallet = walletRepository.findByUsernameBuyer(addwallet.getUsernameBuyer());
 		if (wallet == null) {
 			return "User not found";
@@ -49,6 +52,9 @@ public class WalletService {
 	
 	public String withdrawWalletService(Dealing withdraw) {
 		Wallet buyer = walletRepository.findByUsernameBuyer(withdraw.getUsernameBuyer());
+		if(withdraw.getPrice()<=0){
+			return "Amount must be greater than 0";
+		}
 		if (buyer == null) {
 			return "User not found.";
 		}
@@ -68,6 +74,9 @@ public class WalletService {
 	}
 	
 	public String exchangeWalletService(Dealing dealer) {
+		if(dealer.getPrice()<=0){
+			return "Amount must be greater than 0";
+		}
 		Wallet buyer = walletRepository.findByUsernameBuyer(dealer.getUsernameBuyer());
 		if (buyer == null) {
 			return "User not found";
@@ -76,6 +85,12 @@ public class WalletService {
 		if (seller == null) {
 			return "User not found";
 		}
+		if(buyer.getWalletMoney()<=0||buyer.getWalletMoney()<dealer.getPrice()){
+			return "Your balance is not enough.";
+		}
+		if(buyer.equals(seller)){
+			return "Same user";
+		}
 		buyer.setWalletMoney(buyer.getWalletMoney() - dealer.getPrice());
 		seller.setWalletMoney(seller.getWalletMoney() + dealer.getPrice());
 		//List<TransactionReport> tran_lsit = new ArrayList<TransactionReport>();
@@ -83,21 +98,33 @@ public class WalletService {
 		tran_report.setCreateDate(today);
 		tran_report.setCreateTime(nowTime);
 		tran_report.setMoneyWallet(dealer.getPrice());
-		tran_report.setStatus(PayType.EXCHANGE.toString());
+		tran_report.setStatus(PayType.SPEND.toString());
 		tran_report.setUsernameBuyer(buyer.getUsernameBuyer());
 		tran_report.setUsernameSeller(seller.getUsernameBuyer());
 		tran_report.setWallet(buyer);
 		transactionReportRepository.save(tran_report);
+		TransactionReport tran_report2 = new TransactionReport();
+		tran_report2.setCreateDate(today);
+		tran_report2.setCreateTime(nowTime);
+		tran_report2.setMoneyWallet(dealer.getPrice());
+		tran_report2.setStatus(PayType.RECEIVE.toString());
+		tran_report2.setUsernameBuyer(buyer.getUsernameBuyer());
+		tran_report2.setUsernameSeller(seller.getUsernameBuyer());
+		tran_report2.setWallet(seller);
+		transactionReportRepository.save(tran_report2);
 		return "Success";
 	}
 	
 	public String newuserwallet(Wallet wallet) {
+		Wallet wall = walletRepository.findByUsernameBuyer(wallet.getUsernameBuyer());
+		if(wall!=null){
+			return "This user has already been named.";			
+		}
 		walletRepository.save(wallet);
 		return "success";
 	}
 
 	public WalletDTO getwalletuser(String username){
-		System.out.println(username);
 		Wallet wallet=walletRepository.findByUsernameBuyer(username);
 		WalletDTO walletdto = modelmapper.map(wallet, WalletDTO.class);
 		return walletdto;			
