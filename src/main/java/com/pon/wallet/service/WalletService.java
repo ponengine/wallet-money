@@ -5,13 +5,19 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.pon.wallet.constant.PayType;
 import com.pon.wallet.dto.Dealing;
 import com.pon.wallet.dto.WalletDTO;
@@ -30,7 +36,12 @@ public class WalletService {
 	private WalletRepository walletRepository;
 	@Autowired
 	private TransactionReportRepository transactionReportRepository;
+	@Autowired
+	private Environment env;
 	public String addWalletService(Dealing addwallet) {
+	
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		if(addwallet.getPrice()<=0){
 			return "Amount must be greater than 0";
 		}
@@ -38,6 +49,18 @@ public class WalletService {
 		if (wallet == null) {
 			return "User not found";
 		}
+		String uri = env.getProperty("uri.mainwallet")+"/mainwallet/getmainwallet";	
+		RestTemplate rt = new RestTemplate();
+		int response = rt.getForObject( uri , int.class );
+		if(response<addwallet.getPrice()){
+			return "Not enough money for service.";
+		}
+		response=response-addwallet.getPrice();
+		HttpEntity<String> entity = new HttpEntity<String>(Integer.toString(response) ,headers);
+		String uri2 = env.getProperty("uri.mainwallet")+"/mainwallet/getmainwallet";
+		JSONObject obj = new JSONObject();
+		obj.put("money", response);		
+		String status = rt.postForObject(uri2, obj.toString(), String.class);
 		wallet.setWalletMoney(wallet.getWalletMoney() + addwallet.getPrice());
 		TransactionReport tran_report = new TransactionReport();
 		tran_report.setCreateDate(today);
