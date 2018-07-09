@@ -116,7 +116,6 @@ public class WalletService {
 		}
 		buyer.setWalletMoney(buyer.getWalletMoney() - dealer.getPrice());
 		seller.setWalletMoney(seller.getWalletMoney() + dealer.getPrice());
-		//List<TransactionReport> tran_lsit = new ArrayList<TransactionReport>();
 		TransactionReport tran_report = new TransactionReport();
 		tran_report.setCreateDate(today);
 		tran_report.setCreateTime(nowTime);
