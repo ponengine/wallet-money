@@ -34,6 +34,7 @@ public class TransactionReport implements Serializable{
 	private String status;
 	private String usernameBuyer;
 	private String usernameSeller;
+	private String note;
 	@Transient
 	private LocalDate stasrtDate;
 	@Transient

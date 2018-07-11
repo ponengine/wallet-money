@@ -12,5 +12,6 @@ public class Dealing {
 	private int price;
 	private String usernameBuyer;
 	private String usernameSeller;
+	private String note;
 	
 }
