@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.pon.wallet.domain.BaseRestApi;
 import com.pon.wallet.dto.Dealing;
 import com.pon.wallet.dto.WalletDTO;
 import com.pon.wallet.entity.Wallet;
@@ -34,4 +34,6 @@ public class WalletController {
 	public String exchangeWallet(@RequestBody Dealing dealer){return walletService.exchangeWalletService(dealer);}
 	@GetMapping("/walletget/{username}")
 	public WalletDTO getwallet(@PathVariable("username") String username){return walletService.getwalletuser(username);}
+	@PostMapping("/transferwallet")
+	public BaseRestApi transferWallet(@RequestBody Dealing dealer){return walletService.transferWalletService(dealer);}
 }
