@@ -200,6 +200,9 @@ public class TransactionReportService {
 		}
 		return tran_reportDtos;
 	}
-
+	public String delete(String username) {
+		transactionReportRepository.deleteTransByUsername(username);
+		return "Success";
+	}
 
 }
