@@ -9,7 +9,7 @@ import com.pon.wallet.entity.Wallet;
 
 public interface WalletRepository extends CrudRepository<Wallet,Long>{
 	
-	Wallet findByUsernameBuyer(String usernameBuyer);
+	Wallet findByPayer(String usernameBuyer);
 
 
 

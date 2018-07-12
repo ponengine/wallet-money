@@ -73,7 +73,7 @@ public class TransactionReportService {
 	}
 	public List<TransactionReportDTO> findlistBySearchwithuser(String username, String status, LocalDate stasrtDate,
 			LocalDate endDate) {
-		Wallet wallet = walletRepository.findByUsernameBuyer(username);
+		Wallet wallet = walletRepository.findByPayer(username);
 		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();
 		boolean statustoreturn = false;
 		for (PayType p : PayType.values()){
@@ -156,8 +156,8 @@ public class TransactionReportService {
 		return tran_reportDtos;
 	}
 	public List<TransactionReportDTO> gettranByUser(String username) {
-		Wallet wallet=walletRepository.findByUsernameBuyer(username);
-		System.out.println(wallet.getUsernameBuyer());
+		Wallet wallet=walletRepository.findByPayer(username);
+		System.out.println(wallet.getPayer());
 		List<TransactionReportDTO> tranReportDtos = new ArrayList<TransactionReportDTO>();
 	
 		for (TransactionReport transactionReport : transactionReportRepository.findByWallet(wallet)) {
@@ -173,7 +173,7 @@ public class TransactionReportService {
 	}
 	public List<TransactionReportDTO> getByUserwithStatus(TransactionReport transReport) {
 		List<TransactionReportDTO> tranReportDtos = new ArrayList<TransactionReportDTO>();
-		Wallet wallet =walletRepository.findByUsernameBuyer(transReport.getUsernameBuyer());
+		Wallet wallet =walletRepository.findByPayer(transReport.getPayer());
 		System.out.println();
 		for (TransactionReport transactionReport : transactionReportRepository.findByUserwithStatus(wallet,transReport.getStatus())) {
 			TransactionReportDTO tranReport = new TransactionReportDTO();
@@ -187,7 +187,7 @@ public class TransactionReportService {
 		return tranReportDtos;
 	}
 	public List<TransactionReportDTO> getByUserToday(TransactionReport transReport) {
-		Wallet wallet =walletRepository.findByUsernameBuyer("oreoshop");
+		Wallet wallet =walletRepository.findByPayer(transReport.getPayer());
 		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();
 		for (TransactionReport transactionReport : transactionReportRepository.findByUserwithStatusAndDatetoDay(wallet)) {
 			TransactionReportDTO tranReport = new TransactionReportDTO();
@@ -200,9 +200,9 @@ public class TransactionReportService {
 		}
 		return tran_reportDtos;
 	}
-	public String delete(String username) {
-		transactionReportRepository.deleteTransByUsername(username);
-		return "Success";
-	}
+//	public String delete(String username) {
+//		transactionReportRepository.deleteTransByUsername(username);
+//		return "Success";
+//	}
 
 }

@@ -11,8 +11,10 @@ public class TransactionReportDTO {
 
 	private Long id;
 	private String createDate;
-	private int  moneyWallet;
+	private String createTime;
+	private double  money;
 	private String status;
-	private String usernameBuyer;
-	private String usernameSeller;
+	private String payer;
+	private String receiver;
+	private String note;
 }

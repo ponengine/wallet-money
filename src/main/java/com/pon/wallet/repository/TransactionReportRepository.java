@@ -15,13 +15,13 @@ import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.entity.Wallet;
 public interface TransactionReportRepository extends JpaRepository<TransactionReport, Long>, CrudRepository<TransactionReport, Long>{
-		@Modifying
-	    @Transactional
-	    @Query("delete from TransactionReport t where t.usernameBuyer = ?1")
-	    void deleteTransByUsername(String userName);
+//		@Modifying
+//	    @Transactional
+//	    @Query("delete from TransactionReport t where t.Payer = ?1")
+//	    void deleteTransByUsername(String userName);
 	
-		@Query("select t from TransactionReport t where t.usernameBuyer = ?1")
-	    List<TransactionReport> findByUsernameBuyer(String username);
+		@Query("select t from TransactionReport t where t.payer = ?1")
+	    List<TransactionReport> findByPayer(String username);
 		
 		//Admin
 		@Query("select t from TransactionReport t where  t.status = ?1")

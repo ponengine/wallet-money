@@ -6,6 +6,8 @@ public enum PayType {
 	SPEND("S"),
 	WITHDRAW("W"),
 	RECEIVE("E"),
+	CANCEL("C"),
+	PAYER("P"),
 	REFUND("R");
 	
 	private String type;
