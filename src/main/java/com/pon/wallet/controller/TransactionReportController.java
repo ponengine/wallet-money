@@ -4,7 +4,9 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +21,14 @@ import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.service.TransactionReportService;
 
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/api/transaction")
 public class TransactionReportController {
 
 	@Autowired
 	private TransactionReportService transactionReportService;
 	
 	//Admin
-	@GetMapping("/getalltran")
+	@GetMapping("/admin/getall")
 	public List<TransactionReportDTO> getalltransaction() {
 		return transactionReportService.getAllTransaction();
 	}
@@ -36,35 +38,40 @@ public class TransactionReportController {
 //		return transactionReportService.findAllWithStatus(transReport);
 //	}
 
-	@GetMapping("/gettrantoday")
+	@GetMapping("/admin/gettoday")
 	public List<TransactionReportDTO> gettran_today() {
 		return transactionReportService.gettranToday();
 	}
 
-	@PostMapping("/getbysearch")
+	@PostMapping("/admin/getbysearch")
 	public List<TransactionReportDTO>getbysearch(@RequestBody TransactionReport searchDate) {
 		return  transactionReportService.findlistBySearch(searchDate.getStatus(),searchDate.getStasrtDate(), searchDate.getEndDate());
 	}
 	
+//	@DeleteMapping("/admin/deletebyuser/{usernameBuyer}")
+//	public String deleteTransByUsernameBuyer(@PathVariable("usernameBuyer") String username) {
+//		return transactionReportService.delete(username);
+//	}
+	
 	//User
-	@PostMapping("/getallbyuser")
+	@PostMapping("/user/getallbyuser")
 	public List<TransactionReportDTO> getTransaction(@RequestBody TransactionReport transReport) {
-		return transactionReportService.gettranByUser(transReport.getUsernameBuyer());
+		return transactionReportService.gettranByUser(transReport.getPayer());
 	}
 	
-	@PostMapping("/getallbyuserwithstatus")
-	public List<TransactionReportDTO> getallbyuserwithstatus(@RequestBody TransactionReport transReport) {
-		return transactionReportService.getByUserwithStatus(transReport);
-	}
+//	@PostMapping("/getallbyuserwithstatus")
+//	public List<TransactionReportDTO> getallbyuserwithstatus(@RequestBody TransactionReport transReport) {
+//		return transactionReportService.getByUserwithStatus(transReport);
+//	}
 
-	@PostMapping("/getusertrantoday")
+	@PostMapping("/user/getusertrantoday")
 	public List<TransactionReportDTO> getusertrantoday(@RequestBody TransactionReport transReport) {
 		return transactionReportService.getByUserToday(transReport);
 	}
 	
-	@PostMapping("/getbysearchwithuser")
+	@PostMapping("/user/getbysearchwithuser")
 	public List<TransactionReportDTO> getbysearchwithuser(@RequestBody TransactionReport transReport) {
-		return transactionReportService.findlistBySearchwithuser(transReport.getUsernameBuyer(),transReport.getStatus(),transReport.getStasrtDate(),transReport.getEndDate());
+		return transactionReportService.findlistBySearchwithuser(transReport.getPayer(),transReport.getStatus(),transReport.getStasrtDate(),transReport.getEndDate());
 	}
 
 }

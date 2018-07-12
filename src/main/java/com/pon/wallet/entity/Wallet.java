@@ -1,6 +1,7 @@
 package com.pon.wallet.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -28,10 +29,11 @@ public class Wallet implements Serializable{
 	@Id
 	@GeneratedValue
 	private Long id;
-	private int walletMoney;
-	private String usernameBuyer;
-	private String usernameSeller;
+	private double money;
+	private String payer;
+	//private String receiver;
 	
 	@OneToMany(mappedBy = "wallet")
 	private List<TransactionReport> transactionReport;
+	
 }

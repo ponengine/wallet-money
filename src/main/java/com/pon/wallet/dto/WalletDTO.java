@@ -1,5 +1,7 @@
 package com.pon.wallet.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +9,8 @@ import lombok.Setter;
 @Setter
 public class WalletDTO {
 	private Long id;
-	private int walletMoney;
-	private String usernameBuyer;
-	private String usernameSeller;
+	private double money;
+	private String payer;
+	private String receiver;
+	private String note;
 }

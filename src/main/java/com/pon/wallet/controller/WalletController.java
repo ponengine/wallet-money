@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pon.wallet.domain.BaseRestApi;
-import com.pon.wallet.dto.Dealing;
 import com.pon.wallet.dto.WalletDTO;
 import com.pon.wallet.entity.Wallet;
 import com.pon.wallet.service.WalletService;
 
 @RestController
-@RequestMapping("/managewallet")
+@RequestMapping("/api/walletpocket")
 public class WalletController {
 	@Autowired
 	private WalletService walletService;
@@ -27,13 +26,15 @@ public class WalletController {
 		return walletService.newuserwallet(wallet);
 	}
 	@PostMapping("/addwallet")
-	public String addWallet(@RequestBody Dealing addwallet){return walletService.addWalletService(addwallet);}
+	public String addWallet(@RequestBody WalletDTO walletDTO){return walletService.addWalletService(walletDTO);}
 	@PostMapping("/withdrawwallet")
-	public String withdrawWallet(@RequestBody Dealing withdraw){return walletService.withdrawWalletService(withdraw);}
+	public String withdrawWallet(@RequestBody  WalletDTO withdraw){return walletService.withdrawWalletService(withdraw);}
 	@PostMapping("/exchangewallet")
-	public String exchangeWallet(@RequestBody Dealing dealer){return walletService.exchangeWalletService(dealer);}
+	public BaseRestApi exchangeWallet(@RequestBody  WalletDTO dealer){return walletService.exchangeWalletService(dealer);}
 	@GetMapping("/walletget/{username}")
 	public WalletDTO getwallet(@PathVariable("username") String username){return walletService.getwalletuser(username);}
 	@PostMapping("/transferwallet")
-	public BaseRestApi transferWallet(@RequestBody Dealing dealer){return walletService.transferWalletService(dealer);}
+	public BaseRestApi transferWallet(@RequestBody  WalletDTO dealer){return walletService.transferWalletService(dealer);}
+	@PostMapping("/checkuserandwallet")
+	public BaseRestApi checkUser(@RequestBody WalletDTO walletDTO){return walletService.checkuserwallet(walletDTO);}
 }
