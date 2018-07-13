@@ -109,6 +109,7 @@ public class WalletService {
 		tran_report.setCreateDate(today);
 		tran_report.setCreateTime(nowTime);
 		tran_report.setMoney(dealer.getMoney());
+		tran_report.setNote(dealer.getNote());
 		tran_report.setStatus(PayType.PAYER.toString());
 		tran_report.setPayer(buyer.getPayer());
 		tran_report.setReceiver(seller.getPayer());
