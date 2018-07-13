@@ -13,4 +13,5 @@ public class WalletDTO {
 	private String payer;
 	private String receiver;
 	private String note;
+	private String usernameAdmin;
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.pon.wallet.dto.TransactionAdminDTO;
 import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.service.TransactionReportService;
@@ -29,7 +29,7 @@ public class TransactionReportController {
 	
 	//Admin
 	@GetMapping("/admin/getall")
-	public List<TransactionReportDTO> getalltransaction() {
+	public List<TransactionAdminDTO> getalltransaction() {
 		return transactionReportService.getAllTransaction();
 	}
 	
@@ -39,12 +39,12 @@ public class TransactionReportController {
 //	}
 
 	@GetMapping("/admin/gettoday")
-	public List<TransactionReportDTO> gettran_today() {
+	public List<TransactionAdminDTO> gettran_today() {
 		return transactionReportService.gettranToday();
 	}
 
 	@PostMapping("/admin/getbysearch")
-	public List<TransactionReportDTO>getbysearch(@RequestBody TransactionReport searchDate) {
+	public List<TransactionAdminDTO>getbysearch(@RequestBody TransactionReport searchDate) {
 		return  transactionReportService.findlistBySearch(searchDate.getStatus(),searchDate.getStasrtDate(), searchDate.getEndDate());
 	}
 	

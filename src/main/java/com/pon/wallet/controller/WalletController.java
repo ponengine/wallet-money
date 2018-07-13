@@ -33,8 +33,8 @@ public class WalletController {
 	public BaseRestApi exchangeWallet(@RequestBody  WalletDTO dealer){return walletService.exchangeWalletService(dealer);}
 	@GetMapping("/walletget/{username}")
 	public WalletDTO getwallet(@PathVariable("username") String username){return walletService.getwalletuser(username);}
-	@PostMapping("/transferwallet")
-	public BaseRestApi transferWallet(@RequestBody  WalletDTO dealer){return walletService.transferWalletService(dealer);}
 	@PostMapping("/checkuserandwallet")
 	public BaseRestApi checkUser(@RequestBody WalletDTO walletDTO){return walletService.checkuserwallet(walletDTO);}
+	@PostMapping("/calceltransaction/{id}")
+	public BaseRestApi calcelTransaction(@PathVariable("id")Long id,@RequestBody WalletDTO walletDTO){return walletService.calceltransaction(id,walletDTO);}
 }
