@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.pon.wallet.constant.PayType;
 import com.pon.wallet.domain.BaseResponse;
 import com.pon.wallet.domain.BaseRestApi;
+import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.dto.WalletDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.entity.Wallet;
@@ -135,7 +136,17 @@ public class WalletService {
 		tran_report2.setReferencetran(ref.toString());
 		transactionReportRepository.save(tran_report2);
 		BaseRestApi br = new BaseRestApi();
+		BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
+		Map<String, Object> model = new HashMap<>();
+		model.put("payer", tran_report.getPayer());
+		model.put("today", tran_report.getCreateDate());
+		model.put("time", tran_report.getCreateTime());
+		model.put("money", tran_report.getMoney());
+		model.put("balance", buyer.getMoney());
+		model.put("note", tran_report.getNote());
 		br.setSuccess(true);
+		baseResponse.setData(model);
+		br.setResponse(baseResponse);
 		return br;
 	}
 	
@@ -194,6 +205,7 @@ public class WalletService {
 		return baseRestApi;
 	}
 
+
 	public BaseRestApi calceltransaction(Long id,WalletDTO walletDTO) {
 		 LocalDate today = LocalDate.now();
 		 LocalTime nowTime = LocalTime.now();
@@ -249,6 +261,14 @@ public class WalletService {
 			transactionReportRepository.save(tr);
 			transactionReportRepository.save(tr2);
 			baseRestApi.setSuccess(true);
-		return baseRestApi;
+      return baseRestApi;}
+	
+	public BaseRestApi changestatuswallet(WalletDTO walletDTO) {
+		BaseRestApi baseRestApi = new BaseRestApi();
+		BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
+		Map<String, Object> model = new HashMap<>();
+		return null;
+
+		
 	}
 }
