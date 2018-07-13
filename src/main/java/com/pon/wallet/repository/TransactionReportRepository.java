@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.entity.Wallet;
 public interface TransactionReportRepository extends JpaRepository<TransactionReport, Long>, CrudRepository<TransactionReport, Long>{
@@ -22,6 +21,10 @@ public interface TransactionReportRepository extends JpaRepository<TransactionRe
 	
 		@Query("select t from TransactionReport t where t.payer = ?1")
 	    List<TransactionReport> findByPayer(String username);
+		
+		@Query("select t from TransactionReport t where t.id = ?1")
+		TransactionReport findByIdWallet(Long id);
+		
 		
 		//Admin
 		@Query("select t from TransactionReport t where  t.status = ?1")

@@ -38,7 +38,8 @@ public class TransactionReport implements Serializable{
 	private String payer;
 	private String receiver;
 	private String note;
-	private String reference;
+	private String referenceId;
+	private String referencetran;
 	private String editBy;
 	private LocalDate editDate;
 	private LocalTime editTime;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -32,7 +33,7 @@ import com.pon.wallet.repository.WalletRepository;
 
 @Service
 public class WalletService {
-
+	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	LocalDate today = LocalDate.now();
 	LocalTime nowTime = LocalTime.now();
 	ModelMapper modelmapper = new ModelMapper();
@@ -86,7 +87,7 @@ public class WalletService {
 			return "User not found.";
 		}
 		if (!(buyer.getMoney() >= withdraw.getMoney()) ) {
-			return "Wallet not enough.";
+			return "Money is not enough.";
 		}
 		buyer.setMoney(buyer.getMoney() - withdraw.getMoney());
 		TransactionReport tran_report = new TransactionReport();
@@ -114,6 +115,7 @@ public class WalletService {
 		tran_report.setPayer(buyer.getPayer());
 		tran_report.setReceiver(seller.getPayer());
 		tran_report.setWallet(buyer);
+		tran_report.setReferencetran(timestamp.toString());
 		transactionReportRepository.save(tran_report);
 		TransactionReport tran_report2 = new TransactionReport();
 		tran_report2.setCreateDate(today);
@@ -123,6 +125,7 @@ public class WalletService {
 		tran_report2.setPayer(buyer.getPayer());
 		tran_report2.setReceiver(seller.getPayer());
 		tran_report2.setWallet(seller);
+		tran_report2.setReferencetran(timestamp.toString());
 		transactionReportRepository.save(tran_report2);
 		BaseRestApi br = new BaseRestApi();
 		br.setSuccess(true);
@@ -142,67 +145,6 @@ public class WalletService {
 		Wallet wallet=walletRepository.findByPayer(username);
 		WalletDTO walletdto = modelmapper.map(wallet, WalletDTO.class);
 		return walletdto;			
-	}
-
-	public BaseRestApi transferWalletService(WalletDTO dealer) {
-		Map<String, Object> model = new HashMap<>();
-        BaseRestApi baseRestApi = new BaseRestApi();
-        BaseResponse< Map<String, Object>> baseResponse = new BaseResponse<>();
-		if(dealer.getMoney()<=0){
-			baseRestApi.setSuccess(false);
-			baseResponse.setErrorMessage("Amount must be greater than 0");
-			baseRestApi.setResponse(baseResponse);
-			return baseRestApi;
-		}
-		Wallet buyer = walletRepository.findByPayer(dealer.getPayer());
-		if (buyer == null) {
-			baseRestApi.setSuccess(false);
-			baseResponse.setErrorMessage("User not found");
-			baseRestApi.setResponse(baseResponse);
-			return baseRestApi;
-		}
-		Wallet seller = walletRepository.findByPayer(dealer.getReceiver());
-		if (seller == null) {
-			baseRestApi.setSuccess(false);
-			baseResponse.setErrorMessage("User not found");
-			baseRestApi.setResponse(baseResponse);
-			return baseRestApi;
-		}
-		if(buyer.getMoney()<=0||buyer.getMoney()<dealer.getMoney()){
-			baseRestApi.setSuccess(false);
-			baseResponse.setErrorMessage("Your balance is not enough.");
-			baseRestApi.setResponse(baseResponse);
-			return baseRestApi;
-		}
-		if(buyer.equals(seller)){
-			baseRestApi.setSuccess(false);
-			baseResponse.setErrorMessage("Same user");
-			baseRestApi.setResponse(baseResponse);
-			return baseRestApi;
-		}
-		buyer.setMoney(buyer.getMoney() - dealer.getMoney());
-		seller.setMoney(seller.getMoney() + dealer.getMoney());
-		TransactionReport tran_report = new TransactionReport();
-		tran_report.setCreateDate(today);
-		tran_report.setCreateTime(nowTime);
-		tran_report.setMoney(dealer.getMoney());
-		tran_report.setStatus(PayType.SPEND.toString());
-		tran_report.setPayer(buyer.getPayer());
-		tran_report.setReceiver(seller.getPayer());
-		tran_report.setWallet(buyer);
-		tran_report.setNote(dealer.getNote());
-		transactionReportRepository.save(tran_report);
-		TransactionReport tran_report2 = new TransactionReport();
-		tran_report2.setCreateDate(today);
-		tran_report2.setCreateTime(nowTime);
-		tran_report2.setMoney(dealer.getMoney());
-		tran_report2.setStatus(PayType.RECEIVE.toString());
-		tran_report2.setPayer(buyer.getPayer());
-		tran_report2.setReceiver(seller.getPayer());
-		tran_report2.setWallet(seller);
-		transactionReportRepository.save(tran_report2);
-		baseRestApi.setSuccess(true);
-		return baseRestApi;
 	}
 
 	public BaseRestApi checkuserwallet(WalletDTO walletDTO) {
@@ -242,6 +184,53 @@ public class WalletService {
 			return baseRestApi;
 		}
 		baseRestApi.setSuccess(true);
+		return baseRestApi;
+	}
+
+	public BaseRestApi calceltransaction(Long id,WalletDTO walletDTO) {
+		 BaseRestApi baseRestApi = new BaseRestApi();
+		 BaseResponse< Map<String, Object>> baseResponse = new BaseResponse<>();
+		 TransactionReport tr = transactionReportRepository.findByIdWallet(id);
+		  Wallet payer = walletRepository.findByPayer(tr.getReceiver());
+		  if (payer == null) {
+				baseRestApi.setSuccess(false);
+				baseResponse.setErrorMessage("Payer not found");
+				baseRestApi.setResponse(baseResponse);
+				return baseRestApi;
+			}
+		  Wallet receiver = walletRepository.findByPayer(tr.getPayer());
+		  if (receiver == null) {
+				baseRestApi.setSuccess(false);
+				baseResponse.setErrorMessage("Receiver not found");
+				baseRestApi.setResponse(baseResponse);
+				return baseRestApi;
+			}
+		  if(payer.getMoney()<tr.getMoney()){
+			  baseRestApi.setSuccess(false);
+			  baseResponse.setErrorMessage("Money is not enough.");
+			  baseRestApi.setResponse(baseResponse);
+			  return baseRestApi;
+		  }
+		  payer.setMoney(payer.getMoney() - tr.getMoney());
+		  receiver.setMoney(receiver.getMoney() + tr.getMoney());
+			TransactionReport tran_report = new TransactionReport();
+			tran_report.setReferenceId(id.toString());
+			tran_report.setMoney(tr.getMoney());
+			tran_report.setStatus(PayType.PAYER.toString());
+			tran_report.setPayer(payer.getPayer());
+			tran_report.setReceiver(receiver.getPayer());
+			tran_report.setWallet(payer);
+			tran_report.setEditBy(walletDTO.getUsernameAdmin());
+			transactionReportRepository.save(tran_report);
+			TransactionReport tran_report2 = new TransactionReport();
+			tran_report2.setMoney(tr.getMoney());
+			tran_report2.setStatus(PayType.RECEIVE.toString());
+			tran_report2.setPayer(payer.getPayer());
+			tran_report2.setReceiver(receiver.getPayer());
+			tran_report2.setWallet(receiver);
+			tran_report2.setEditBy(walletDTO.getUsernameAdmin());
+			transactionReportRepository.save(tran_report2);
+			baseRestApi.setSuccess(true);
 		return baseRestApi;
 	}
 }
