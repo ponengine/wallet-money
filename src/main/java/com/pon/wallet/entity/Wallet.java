@@ -32,6 +32,7 @@ public class Wallet implements Serializable{
 	private double money;
 	private String payer;
 	//private String receiver;
+	private String status;
 	
 	@OneToMany(mappedBy = "wallet")
 	private List<TransactionReport> transactionReport;
