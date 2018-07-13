@@ -33,9 +33,8 @@ import com.pon.wallet.repository.WalletRepository;
 
 @Service
 public class WalletService {
-	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-	LocalDate today = LocalDate.now();
-	LocalTime nowTime = LocalTime.now();
+
+	
 	ModelMapper modelmapper = new ModelMapper();
 	@Autowired
 	private WalletRepository walletRepository;
@@ -44,7 +43,8 @@ public class WalletService {
 	@Autowired
 	private Environment env;
 	public String addWalletService(WalletDTO addwallet) {
-	
+		LocalDate today = LocalDate.now();
+		LocalTime nowTime = LocalTime.now();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		if(addwallet.getMoney()<=0){
@@ -79,6 +79,8 @@ public class WalletService {
 	}
 	
 	public String withdrawWalletService(WalletDTO withdraw) {
+		LocalDate today = LocalDate.now();
+		LocalTime nowTime = LocalTime.now();
 		Wallet buyer = walletRepository.findByPayer(withdraw.getPayer());
 		if(withdraw.getMoney()<=0){
 			return "Amount must be greater than 0";
@@ -102,8 +104,13 @@ public class WalletService {
 	}
 	
 	public BaseRestApi exchangeWalletService(WalletDTO dealer) {
+		LocalDate today = LocalDate.now();
+		LocalTime nowTime = LocalTime.now();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Wallet buyer = walletRepository.findByPayer(dealer.getPayer());
 		Wallet seller = walletRepository.findByPayer(dealer.getReceiver());
+		Long ref = timestamp.getTime();
+		System.out.println(ref);
 		buyer.setMoney(buyer.getMoney() - dealer.getMoney());
 		seller.setMoney(seller.getMoney() + dealer.getMoney());
 		TransactionReport tran_report = new TransactionReport();
@@ -115,7 +122,7 @@ public class WalletService {
 		tran_report.setPayer(buyer.getPayer());
 		tran_report.setReceiver(seller.getPayer());
 		tran_report.setWallet(buyer);
-		tran_report.setReferencetran(timestamp.toString());
+		tran_report.setReferencetran(ref.toString());
 		transactionReportRepository.save(tran_report);
 		TransactionReport tran_report2 = new TransactionReport();
 		tran_report2.setCreateDate(today);
@@ -125,7 +132,7 @@ public class WalletService {
 		tran_report2.setPayer(buyer.getPayer());
 		tran_report2.setReceiver(seller.getPayer());
 		tran_report2.setWallet(seller);
-		tran_report2.setReferencetran(timestamp.toString());
+		tran_report2.setReferencetran(ref.toString());
 		transactionReportRepository.save(tran_report2);
 		BaseRestApi br = new BaseRestApi();
 		br.setSuccess(true);
@@ -188,9 +195,12 @@ public class WalletService {
 	}
 
 	public BaseRestApi calceltransaction(Long id,WalletDTO walletDTO) {
+		 LocalDate today = LocalDate.now();
+		 LocalTime nowTime = LocalTime.now();
 		 BaseRestApi baseRestApi = new BaseRestApi();
 		 BaseResponse< Map<String, Object>> baseResponse = new BaseResponse<>();
 		 TransactionReport tr = transactionReportRepository.findByIdWallet(id);
+		 TransactionReport tr2 = transactionReportRepository.findByIdWallet(tr.getPayer(), tr.getReferencetran());
 		  Wallet payer = walletRepository.findByPayer(tr.getReceiver());
 		  if (payer == null) {
 				baseRestApi.setSuccess(false);
@@ -221,6 +231,8 @@ public class WalletService {
 			tran_report.setReceiver(receiver.getPayer());
 			tran_report.setWallet(payer);
 			tran_report.setEditBy(walletDTO.getUsernameAdmin());
+			tran_report.setEditDate(today);
+			tran_report.setEditTime(nowTime);
 			transactionReportRepository.save(tran_report);
 			TransactionReport tran_report2 = new TransactionReport();
 			tran_report2.setMoney(tr.getMoney());
@@ -229,7 +241,13 @@ public class WalletService {
 			tran_report2.setReceiver(receiver.getPayer());
 			tran_report2.setWallet(receiver);
 			tran_report2.setEditBy(walletDTO.getUsernameAdmin());
+			tran_report2.setEditDate(today);
+			tran_report2.setEditTime(nowTime);
 			transactionReportRepository.save(tran_report2);
+			tr.setStatus(PayType.CANCEL.toString());
+			tr2.setStatus(PayType.CANCEL.toString());
+			transactionReportRepository.save(tr);
+			transactionReportRepository.save(tr2);
 			baseRestApi.setSuccess(true);
 		return baseRestApi;
 	}

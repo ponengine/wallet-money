@@ -25,6 +25,8 @@ public interface TransactionReportRepository extends JpaRepository<TransactionRe
 		@Query("select t from TransactionReport t where t.id = ?1")
 		TransactionReport findByIdWallet(Long id);
 		
+		@Query("select t from TransactionReport t where t.payer = ?1 and t.referencetran = ?2")
+		TransactionReport findByIdWallet(String payer,String referencetran);
 		
 		//Admin
 		@Query("select t from TransactionReport t where  t.status = ?1")
