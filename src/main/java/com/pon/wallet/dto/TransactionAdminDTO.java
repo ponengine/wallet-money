@@ -16,6 +16,9 @@ public class TransactionAdminDTO {
 	private String usernameBuyer;
 	private String usernameSeller;
 	private String note;
-	private String reference;
+	private String referenceId;
+	private String referencetran;
 	private String editBy;
+	private LocalDate editDate;
+	private LocalTime editTime;
 }

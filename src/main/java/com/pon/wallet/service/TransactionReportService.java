@@ -30,28 +30,28 @@ public class TransactionReportService {
 	private TransactionReportRepository transactionReportRepository;
 	@Autowired
 	private WalletRepository walletRepository;
-	
+
 	static ModelMapper modelMapper = new ModelMapper();
 	static LocalDateTime today = LocalDateTime.now();
 	//static LocalTime nowTime = LocalTime.now();
-	
-	public List<TransactionReportDTO> findlistBySearch(String status, LocalDate stasrtDate, LocalDate endDate) {
-		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();
+
+	public List<TransactionAdminDTO> findlistBySearch(String status, LocalDate stasrtDate, LocalDate endDate) {
+		List<TransactionAdminDTO> tran_reportDtos = new ArrayList<TransactionAdminDTO>();
 		boolean statustoreturn = false;
 		for (PayType p : PayType.values()){
 			if (p.toString().equalsIgnoreCase(status)) {
 				statustoreturn = true;
 			}
 		}
-		
+
 		if (!statustoreturn) {
 			List<TransactionReport> listtran = transactionReportRepository
 					.findByStartDateandEndDateandNostatus(stasrtDate, endDate);
 			if (!listtran.isEmpty() || listtran != null) {
 				for (TransactionReport transactionReport : listtran) {
-					TransactionReportDTO tranReport = new TransactionReportDTO();
+					TransactionAdminDTO tranReport = new TransactionAdminDTO();
 					try {
-						tranReport = modelMapper.map(transactionReport, TransactionReportDTO.class);
+						tranReport = modelMapper.map(transactionReport, TransactionAdminDTO.class);
 						tran_reportDtos.add(tranReport);
 
 					} catch (Exception ex) {
@@ -64,15 +64,15 @@ public class TransactionReportService {
 					stasrtDate, endDate, status);
 			if (!listtran.isEmpty() || listtran != null) {
 				for (TransactionReport transactionReport : listtran) {
-					TransactionReportDTO tranReport = new TransactionReportDTO();
+					TransactionAdminDTO tranReport = new TransactionAdminDTO();
 					try {
-						tranReport = modelMapper.map(transactionReport, TransactionReportDTO.class);
+						tranReport = modelMapper.map(transactionReport, TransactionAdminDTO.class);
 						tran_reportDtos.add(tranReport);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
-			
+
 			}
 		}return tran_reportDtos;
 	}
@@ -86,7 +86,7 @@ public class TransactionReportService {
 				statustoreturn = true;
 			}
 		}
-		
+
 		if (!statustoreturn) {
 			List<TransactionReport> listtran = transactionReportRepository
 					.findByUserwitSearchAll(wallet, stasrtDate, endDate);
@@ -115,16 +115,16 @@ public class TransactionReportService {
 						ex.printStackTrace();
 					}
 				}
-			
+
 			}
 		}return tran_reportDtos;
 	}
-	public List<TransactionReportDTO> getAllTransaction() {
-		List<TransactionReportDTO> tranReportDtos = new ArrayList<TransactionReportDTO>();
+	public List<TransactionAdminDTO> getAllTransaction() {
+		List<TransactionAdminDTO> tranReportDtos = new ArrayList<TransactionAdminDTO>();
 		for (TransactionReport transactionReport : transactionReportRepository.findAll()) {
-			TransactionReportDTO tranReport = new TransactionReportDTO();
+			TransactionAdminDTO tranReport = new TransactionAdminDTO();
 			try {
-				tranReport = modelMapper.map(transactionReport, TransactionReportDTO.class);
+				tranReport = modelMapper.map(transactionReport, TransactionAdminDTO.class);
 				tranReportDtos.add(tranReport);
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -147,12 +147,12 @@ public class TransactionReportService {
 		}}
 		return tranReportDtos;
 	}
-	public List<TransactionReportDTO> gettranToday() {
-		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();
+	public List<TransactionAdminDTO> gettranToday() {
+		List<TransactionAdminDTO> tran_reportDtos = new ArrayList<TransactionAdminDTO>();
 		for (TransactionReport transactionReport : transactionReportRepository.findByCreateDate()) {
-			TransactionReportDTO tranReport = new TransactionReportDTO();
+			TransactionAdminDTO tranReport = new TransactionAdminDTO();
 			try {
-				tranReport = modelMapper.map(transactionReport, TransactionReportDTO.class);
+				tranReport = modelMapper.map(transactionReport, TransactionAdminDTO.class);
 				tran_reportDtos.add(tranReport);
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -164,7 +164,7 @@ public class TransactionReportService {
 		Wallet wallet=walletRepository.findByPayer(username);
 		System.out.println(wallet.getPayer());
 		List<TransactionReportDTO> tranReportDtos = new ArrayList<TransactionReportDTO>();
-	
+
 		for (TransactionReport transactionReport : transactionReportRepository.findByWallet(wallet)) {
 			TransactionReportDTO tranReport = new TransactionReportDTO();
 			try {
@@ -213,7 +213,7 @@ public class TransactionReportService {
 		BaseRestApi baseRestApi = new BaseRestApi();
 		BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
 		Map<String, Object> model = new HashMap<>();
-		
+
 		Wallet wallet = walletRepository.findByPayer(username);
 		System.out.println(wallet.getPayer());
 		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();

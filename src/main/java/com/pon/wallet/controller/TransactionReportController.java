@@ -26,28 +26,28 @@ public class TransactionReportController {
 
 	@Autowired
 	private TransactionReportService transactionReportService;
-	
+
 	//Admin
 	@GetMapping("/admin/getall")
-	public List<TransactionReportDTO> getalltransaction() {
+	public List<TransactionAdminDTO> getalltransaction() {
 		return transactionReportService.getAllTransaction();
 	}
-	
+
 //	@PostMapping("/getalltranwithstatus")
 //	public List<TransactionReportDTO> getalltranwithstatus(@RequestBody TransactionReport transReport) {
 //		return transactionReportService.findAllWithStatus(transReport);
 //	}
 
 	@GetMapping("/admin/gettoday")
-	public List<TransactionReportDTO> gettran_today() {
+	public List<TransactionAdminDTO> gettran_today() {
 		return transactionReportService.gettranToday();
 	}
 
 	@PostMapping("/admin/getbysearch")
-	public List<TransactionReportDTO>getbysearch(@RequestBody TransactionReport searchDate) {
+	public List<TransactionAdminDTO>getbysearch(@RequestBody TransactionReport searchDate) {
 		return  transactionReportService.findlistBySearch(searchDate.getStatus(),searchDate.getStasrtDate(), searchDate.getEndDate());
 	}
-	
+
 	@PostMapping("/admin/disableuser")
 	public BaseRestApi disableUser(String seaechpayer) {
 		return transactionReportService.findByUserToDisable(seaechpayer);
@@ -56,7 +56,7 @@ public class TransactionReportController {
 //	public String deleteTransByUsernameBuyer(@PathVariable("usernameBuyer") String username) {
 //		return transactionReportService.delete(username);
 //	}
-	
+
 	//User
 //	@PostMapping("/user/getallbyuser")
 //	public List<TransactionReportDTO> getTransaction(@RequestBody TransactionReport transReport) {
@@ -66,7 +66,7 @@ public class TransactionReportController {
 	public List<TransactionReportDTO> getTransaction(@PathVariable("username") String username) {
 		return transactionReportService.gettranByUser(username);
 	}
-	
+
 //	@PostMapping("/getallbyuserwithstatus")
 //	public List<TransactionReportDTO> getallbyuserwithstatus(@RequestBody TransactionReport transReport) {
 //		return transactionReportService.getByUserwithStatus(transReport);
@@ -76,7 +76,7 @@ public class TransactionReportController {
 	public List<TransactionReportDTO> getusertrantoday(@RequestBody TransactionReport transReport) {
 		return transactionReportService.getByUserToday(transReport);
 	}
-	
+
 	@PostMapping("/user/getbysearchwithuser")
 	public List<TransactionReportDTO> getbysearchwithuser(@RequestBody TransactionReport transReport) {
 		return transactionReportService.findlistBySearchwithuser(transReport.getPayer(),transReport.getStatus(),transReport.getStasrtDate(),transReport.getEndDate());
