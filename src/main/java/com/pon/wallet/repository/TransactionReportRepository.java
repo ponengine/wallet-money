@@ -34,7 +34,7 @@ public interface TransactionReportRepository extends JpaRepository<TransactionRe
 		List<TransactionReport> findByStartDateandEndDateandNostatus(LocalDate startDate,LocalDate endDate);
 		
 		//User
-		@Query("select t from TransactionReport t where t.wallet = ?1 ")
+		@Query("select t from TransactionReport t where t.wallet = ?1 order by t.id desc")
 		List<TransactionReport> findByWallet(Wallet wallet); //all
 		@Query("select t from TransactionReport t where t.wallet = ?1 and t.status = ?2")
 		List<TransactionReport> findByUserwithStatus(Wallet wallet,String status);// allwithstatus

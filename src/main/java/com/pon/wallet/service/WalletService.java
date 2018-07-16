@@ -123,7 +123,7 @@ public class WalletService {
 		model.put("payer", tran_report.getPayer());
 		model.put("today", tran_report.getCreateDate());
 		model.put("time", tran_report.getCreateTime());
-		model.put("money", tran_report.getMoney());
+		model.put("money_transfer", tran_report.getMoney());
 		model.put("balance", buyer.getMoney());
 		model.put("note", tran_report.getNote());
 		

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.pon.wallet.domain.BaseRestApi;
 import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.service.TransactionReportService;
@@ -48,15 +48,23 @@ public class TransactionReportController {
 		return  transactionReportService.findlistBySearch(searchDate.getStatus(),searchDate.getStasrtDate(), searchDate.getEndDate());
 	}
 	
+	@PostMapping("/admin/disableuser")
+	public BaseRestApi disableUser(String seaechpayer) {
+		return transactionReportService.findByUserToDisable(seaechpayer);
+	}
 //	@DeleteMapping("/admin/deletebyuser/{usernameBuyer}")
 //	public String deleteTransByUsernameBuyer(@PathVariable("usernameBuyer") String username) {
 //		return transactionReportService.delete(username);
 //	}
 	
 	//User
-	@PostMapping("/user/getallbyuser")
-	public List<TransactionReportDTO> getTransaction(@RequestBody TransactionReport transReport) {
-		return transactionReportService.gettranByUser(transReport.getPayer());
+//	@PostMapping("/user/getallbyuser")
+//	public List<TransactionReportDTO> getTransaction(@RequestBody TransactionReport transReport) {
+//		return transactionReportService.gettranByUser(transReport.getPayer());
+//	}
+	@GetMapping("/user/getallbyuser/{username}")
+	public List<TransactionReportDTO> getTransaction(@PathVariable("username") String username) {
+		return transactionReportService.gettranByUser(username);
 	}
 	
 //	@PostMapping("/getallbyuserwithstatus")

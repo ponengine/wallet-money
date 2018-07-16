@@ -4,13 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pon.wallet.constant.PayType;
+import com.pon.wallet.constant.Status;
+import com.pon.wallet.domain.BaseResponse;
+import com.pon.wallet.domain.BaseRestApi;
 import com.pon.wallet.dto.TransactionReportDTO;
 import com.pon.wallet.entity.TransactionReport;
 import com.pon.wallet.entity.Wallet;
@@ -204,5 +209,33 @@ public class TransactionReportService {
 //		transactionReportRepository.deleteTransByUsername(username);
 //		return "Success";
 //	}
+	public BaseRestApi findByUserToDisable(String username) {
+		BaseRestApi baseRestApi = new BaseRestApi();
+		BaseResponse<Map<String, Object>> baseResponse = new BaseResponse<>();
+		Map<String, Object> model = new HashMap<>();
+		
+		Wallet wallet = walletRepository.findByPayer(username);
+		System.out.println(wallet.getPayer());
+		List<TransactionReportDTO> tran_reportDtos = new ArrayList<TransactionReportDTO>();
+//		if (payer.getPayer() == null || payer.getPayer().isEmpty()) {
+//			baseRestApi.setSuccess(false);
+//			return baseRestApi;
+//		}
+		for (TransactionReport transactionReport : transactionReportRepository.findByPayer(wallet.getPayer())) {
+			TransactionReportDTO tranReport = new TransactionReportDTO();
+			try {
+				tranReport = modelMapper.map(transactionReport, TransactionReportDTO.class);
+				tran_reportDtos.add(tranReport);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		model.put("tran", tran_reportDtos);
+		wallet.setStatus(Status.INACTIVE.toString());
+		baseRestApi.setSuccess(true);
+		baseResponse.setData(model);
+		baseRestApi.setResponse(baseResponse);
+		return baseRestApi;
+	}
 
 }

@@ -37,4 +37,6 @@ public class WalletController {
 	public BaseRestApi transferWallet(@RequestBody  WalletDTO dealer){return walletService.transferWalletService(dealer);}
 	@PostMapping("/checkuserandwallet")
 	public BaseRestApi checkUser(@RequestBody WalletDTO walletDTO){return walletService.checkuserwallet(walletDTO);}
+//	@PostMapping("/changestatuswallet")
+//	public BaseRestApi changeStatusWallet(@RequestBody WalletDTO walletDTO){return walletService.changestatuswallet(walletDTO);}
 }
